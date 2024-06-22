@@ -8,7 +8,7 @@ class LoginApp:
     def __init__(self):
         self.app = Tk()
         self.app.title("Login")
-        self.app.geometry("300x200")
+        self.app.geometry("500x400")
 
         self.username = StringVar()
         self.password = StringVar()
@@ -18,26 +18,31 @@ class LoginApp:
         self.app.mainloop()
 
     def create_widgets(self):
-        Label(self.app, text="Username").grid(column=0, row=0, padx=5, pady=5)
-        Entry(self.app, textvariable=self.username).grid(
-            column=1, row=0, padx=5, pady=5
-        )
+        marco = LabelFrame(self.app, text="LOGIN", bg="#F5F5DC")
+        marco.place(x=15, y=15, width=750, height=500)
 
-        Label(self.app, text="Password").grid(column=0, row=1, padx=5, pady=5)
-        Entry(self.app, textvariable=self.password, show="*").grid(
+        Label(marco, text="Username", background="lightblue").grid(
+            column=0, row=0, padx=5, pady=5
+        )
+        Entry(marco, textvariable=self.username).grid(column=1, row=0, padx=5, pady=5)
+
+        Label(marco, text="Password", background="lightblue").grid(
+            column=0, row=1, padx=5, pady=5
+        )
+        Entry(marco, textvariable=self.password, show="*").grid(
             column=1, row=1, padx=5, pady=5
         )
 
-        Label(self.app, text="Role").grid(column=0, row=2, padx=5, pady=5)
+        Label(marco, text="Role").grid(column=0, row=2, padx=5, pady=5)
 
         # Combobox for role selection
         self.combobox_role = ttk.Combobox(
-            self.app, textvariable=self.role, state="readonly"
+            marco, textvariable=self.role, state="readonly"
         )
         self.combobox_role["values"] = ("Estudiante", "Profesor")
         self.combobox_role.grid(column=1, row=2, padx=5, pady=5)
 
-        Button(self.app, text="Login", command=self.login).grid(
+        Button(marco, text="Login", command=self.login).grid(
             column=1, row=3, padx=5, pady=5
         )
 
