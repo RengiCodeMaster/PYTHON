@@ -80,10 +80,11 @@ class ProfesoresApp:
         self.app.mainloop()
 
     def create_widgets(self):
+
         marco = LabelFrame(
             self.app,
             text="Seleccion de tutoria",
-            bg="lightblue",
+            bg="#27E8BE",
             font=("Arial", 16, "bold"),
         )
         marco.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
@@ -91,7 +92,7 @@ class ProfesoresApp:
         self.app.grid_rowconfigure(0, weight=1)
         self.app.grid_columnconfigure(0, weight=1)
 
-        Label(marco, text="Codigo", font=("Arial", 12)).grid(
+        Label(marco, text="Codigo", font=("Arial", 12), bg="#20BDE6").grid(
             column=0, row=0, padx=10, pady=10, sticky=E
         )
         Entry(marco, textvariable=self.Codigo).grid(
@@ -137,15 +138,29 @@ class ProfesoresApp:
         self.combox_horario["values"] = ("Mañana", "Tarde", "Noche")
         self.combox_horario.grid(column=3, row=2, padx=3, pady=3, sticky=W)
 
-        Button(marco, text="Mostrar", command=self.mostrar, font=("Arial", 12)).grid(
-            column=0, row=4, padx=25, pady=15, sticky=W
-        )
-        Button(marco, text="Insertar", command=self.insertar, font=("Arial", 12)).grid(
-            column=1, row=4, padx=25, pady=15, sticky=W
-        )
-        Button(marco, text="Eliminar", command=self.eliminar, font=("Arial", 12)).grid(
-            column=2, row=4, padx=25, pady=15, sticky=W
-        )
+        Button(
+            marco,
+            text="Mostrar",
+            command=self.mostrar,
+            font=("Arial", 12),
+            bg="#19E329",
+        ).grid(column=0, row=4, padx=25, pady=15, sticky=W)
+
+        Button(
+            marco,
+            text="Insertar",
+            command=self.insertar,
+            font=("Arial", 12),
+            bg="#1974E3",
+        ).grid(column=1, row=4, padx=25, pady=15, sticky=W)
+
+        Button(
+            marco,
+            text="Eliminar",
+            command=self.eliminar,
+            font=("Arial", 12),
+            bg="#E32319",
+        ).grid(column=2, row=4, padx=25, pady=15, sticky=W)
 
         for i in range(8):
             marco.grid_rowconfigure(i, weight=1)
