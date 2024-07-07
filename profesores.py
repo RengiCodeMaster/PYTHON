@@ -1,64 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-import mysql.connector
-
-
-class DatabaseManager:
-    def __init__(self, host, user, password, database):
-        self.host = host
-        self.user = user
-        self.password = password
-        self.database = database
-
-    def connect(self):
-        return mysql.connector.connect(
-            host=self.host,
-            user=self.user,
-            passwd=self.password,
-            database=self.database,
-        )
-
-    def fetch_all(self):
-        try:
-            connection = self.connect()
-            cursor = connection.cursor()
-            cursor.execute("SELECT * FROM tutoria.profesores")
-            rows = cursor.fetchall()
-            cursor.close()
-            connection.close()
-            return rows
-        except mysql.connector.Error as error:
-            messagebox.showerror("Error", f"Error al obtener datos: {error}")
-            return []
-
-    def insert(self, data):
-        try:
-            connection = self.connect()
-            cursor = connection.cursor()
-            sql = (
-                "INSERT INTO profesores (codigo_profesor, nombre, apellido, email, genero, horario) "
-                "VALUES (%s, %s, %s, %s, %s, %s)"
-            )
-            cursor.execute(sql, data)
-            connection.commit()
-            cursor.close()
-            connection.close()
-        except mysql.connector.Error as error:
-            messagebox.showerror("Error", f"Error al insertar datos: {error}")
-
-    def delete(self, id_profesor):
-        try:
-            connection = self.connect()
-            cursor = connection.cursor()
-            cursor.execute(
-                "DELETE FROM profesores WHERE id_profesor = %s", (id_profesor,)
-            )
-            connection.commit()
-            cursor.close()
-            connection.close()
-        except mysql.connector.Error as error:
-            messagebox.showerror("Error", f"Error al eliminar datos: {error}")
+from PIL import Image, ImageTk
+from dataBaseProfesores import DatabaseManagerProfesores
 
 
 class ProfesoresApp:
@@ -67,8 +11,12 @@ class ProfesoresApp:
 
         self.app = Tk()
         self.app.title("Tutorias")
-        self.app.geometry("700x600")
-
+        self.app.geometry("900x700")
+        self.app.configure(bg="#E8F0F2")
+        self.icon_img = PhotoImage(
+            file="./example/UNAS.png"
+        )  # Reemplaza con la ruta de tu ícono
+        self.app.iconphoto(False, self.icon_img)
         self.Codigo = StringVar()
         self.Nombre = StringVar()
         self.Apellido = StringVar()
@@ -80,95 +28,127 @@ class ProfesoresApp:
         self.app.mainloop()
 
     def create_widgets(self):
+        main_frame = Frame(self.app, bg="#E8F0F2")
+        main_frame.pack(fill=BOTH, expand=True)
 
-        marco = LabelFrame(
-            self.app,
-            text="Seleccion de tutoria",
-            bg="#27E8BE",
-            font=("Arial", 16, "bold"),
+        # Title
+        title_label = Label(
+            main_frame,
+            text="REGISTRO DE PROFESORES",
+            bg="#E8F0F2",
+            fg="#333333",
+            font=("Helvetica", 24, "bold"),
+            pady=20,
         )
-        marco.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+        title_label.pack()
 
-        self.app.grid_rowconfigure(0, weight=1)
-        self.app.grid_columnconfigure(0, weight=1)
+        input_frame = Frame(
+            main_frame, bg="#FFFFFF", bd=2, relief="groove", padx=20, pady=20
+        )
+        input_frame.pack(pady=20, padx=20, fill=BOTH, expand=True)
 
-        Label(marco, text="Codigo", font=("Arial", 12), bg="#20BDE6").grid(
+        self.create_input_fields(input_frame)
+
+        self.create_buttons(input_frame)
+
+        self.create_table(main_frame)
+
+    def create_input_fields(self, frame):
+        Label(frame, text="Codigo", font=("Helvetica", 12), bg="#FFFFFF").grid(
             column=0, row=0, padx=10, pady=10, sticky=E
         )
-        Entry(marco, textvariable=self.Codigo).grid(
+        Entry(frame, textvariable=self.Codigo, font=("Helvetica", 12)).grid(
             column=1, row=0, padx=10, pady=10, sticky=W
         )
 
-        Label(marco, text="Nombre", font=("Arial", 12)).grid(
+        Label(frame, text="Nombre", font=("Helvetica", 12), bg="#FFFFFF").grid(
             column=0, row=1, padx=10, pady=10, sticky=E
         )
-        Entry(marco, textvariable=self.Nombre).grid(
+        Entry(frame, textvariable=self.Nombre, font=("Helvetica", 12)).grid(
             column=1, row=1, padx=10, pady=10, sticky=W
         )
 
-        Label(marco, text="Apellido", font=("Arial", 12)).grid(
+        Label(frame, text="Apellido", font=("Helvetica", 12), bg="#FFFFFF").grid(
             column=0, row=2, padx=10, pady=10, sticky=E
         )
-        Entry(marco, textvariable=self.Apellido).grid(
+        Entry(frame, textvariable=self.Apellido, font=("Helvetica", 12)).grid(
             column=1, row=2, padx=10, pady=10, sticky=W
         )
 
-        Label(marco, text="Email", font=("Arial", 12)).grid(
+        Label(frame, text="Email", font=("Helvetica", 12), bg="#FFFFFF").grid(
             column=2, row=0, padx=10, pady=10, sticky=E
         )
-        Entry(marco, textvariable=self.Email).grid(
+        Entry(frame, textvariable=self.Email, font=("Helvetica", 12)).grid(
             column=3, row=0, padx=10, pady=10, sticky=W
         )
 
-        Label(marco, text="Genero", font=("Arial", 12)).grid(
+        Label(frame, text="Genero", font=("Helvetica", 12), bg="#FFFFFF").grid(
             column=2, row=1, padx=10, pady=10, sticky=E
         )
         self.combox_genero = ttk.Combobox(
-            marco, textvariable=self.Genero, state="readonly"
+            frame, textvariable=self.Genero, state="readonly", font=("Helvetica", 12)
         )
         self.combox_genero["values"] = ("M", "F", "Otros")
-        self.combox_genero.grid(column=3, row=1, padx=5, pady=5, sticky=W)
+        self.combox_genero.grid(column=3, row=1, padx=10, pady=10, sticky=W)
 
-        Label(marco, text="Horario", font=("Arial", 12)).grid(
+        Label(frame, text="Horario", font=("Helvetica", 12), bg="#FFFFFF").grid(
             column=2, row=2, padx=10, pady=10, sticky=E
         )
         self.combox_horario = ttk.Combobox(
-            marco, textvariable=self.Horario, state="readonly"
+            frame, textvariable=self.Horario, state="readonly", font=("Helvetica", 12)
         )
         self.combox_horario["values"] = ("Mañana", "Tarde", "Noche")
-        self.combox_horario.grid(column=3, row=2, padx=3, pady=3, sticky=W)
+        self.combox_horario.grid(column=3, row=2, padx=10, pady=10, sticky=W)
+
+    def create_buttons(self, frame):
+        button_frame = Frame(frame, bg="#FFFFFF")
+        button_frame.grid(column=0, row=3, columnspan=4, pady=20)
 
         Button(
-            marco,
+            button_frame,
             text="Mostrar",
             command=self.mostrar,
-            font=("Arial", 12),
+            font=("Helvetica", 12),
             bg="#19E329",
-        ).grid(column=0, row=4, padx=25, pady=15, sticky=W)
+            fg="#FFFFFF",
+            width=10,
+            padx=5,
+            pady=5,
+            cursor="hand2",
+        ).grid(column=0, row=0, padx=10)
 
         Button(
-            marco,
+            button_frame,
             text="Insertar",
             command=self.insertar,
-            font=("Arial", 12),
+            font=("Helvetica", 12),
             bg="#1974E3",
-        ).grid(column=1, row=4, padx=25, pady=15, sticky=W)
+            fg="#FFFFFF",
+            width=10,
+            padx=5,
+            pady=5,
+            cursor="hand2",
+        ).grid(column=1, row=0, padx=10)
 
         Button(
-            marco,
+            button_frame,
             text="Eliminar",
             command=self.eliminar,
-            font=("Arial", 12),
+            font=("Helvetica", 12),
             bg="#E32319",
-        ).grid(column=2, row=4, padx=25, pady=15, sticky=W)
+            fg="#FFFFFF",
+            width=10,
+            padx=5,
+            pady=5,
+            cursor="hand2",
+        ).grid(column=2, row=0, padx=10)
 
-        for i in range(8):
-            marco.grid_rowconfigure(i, weight=1)
-        for i in range(6):
-            marco.grid_columnconfigure(i, weight=1)
+    def create_table(self, frame):
+        table_frame = Frame(frame, bg="#E8F0F2")
+        table_frame.pack(pady=20, padx=20, fill=BOTH, expand=True)
 
         self.tvProfesores = ttk.Treeview(
-            marco,
+            table_frame,
             columns=(
                 "id_profesor",
                 "Codigo",
@@ -178,11 +158,10 @@ class ProfesoresApp:
                 "Genero",
                 "Horario",
             ),
+            show="headings",
+            selectmode="browse",
         )
-        self.tvProfesores.grid(
-            column=0, row=5, columnspan=5, padx=10, pady=10, sticky="nsew"
-        )
-        self.tvProfesores["show"] = "headings"
+        self.tvProfesores.pack(fill=BOTH, expand=True)
 
         for col in (
             "id_profesor",
@@ -193,16 +172,15 @@ class ProfesoresApp:
             "Genero",
             "Horario",
         ):
-            self.tvProfesores.column(col, width=100, anchor="center")
+            self.tvProfesores.column(col, anchor=CENTER, width=100)
             self.tvProfesores.heading(col, text=col.capitalize())
 
     def mostrar(self):
         for row in self.tvProfesores.get_children():
             self.tvProfesores.delete(row)
-
         rows = self.db_manager.fetch_all()
         for row in rows:
-            self.tvProfesores.insert("", "end", text=row[0], values=row)
+            self.tvProfesores.insert("", "end", values=row)
 
     def insertar(self):
         data = (
@@ -240,7 +218,7 @@ class ProfesoresApp:
 
 
 if __name__ == "__main__":
-    db_manager = DatabaseManager(
+    db_manager = DatabaseManagerProfesores(
         host="localhost", user="root", password="123456789", database="tutoria"
     )
     app = ProfesoresApp(db_manager)
