@@ -30,6 +30,22 @@ class DatabaseManagerAlumno:
             messagebox.showerror("Error", f"Error al obtener datos: {error}")
             return []
 
+    def get_mejores_tutores(self):
+        # Esta es una consulta de ejemplo. Deberá ajustarla según sus criterios para "mejores tutores"
+        query = """
+        SELECT id_profesor, Nombre, Apellido
+        FROM profesores
+        ORDER BY calificacion DESC
+        LIMIT 10
+        """
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
+
+    def guardar_asignaciones(self, asignaciones):
+        query = "INSERT INTO asignaciones_tutoria (id_alumno, id_tutor) VALUES (%s, %s)"
+        self.cursor.executemany(query, asignaciones)
+        self.connection.commit()
+
     def insert(self, data):
         try:
             connection = self.connect()
@@ -44,6 +60,7 @@ class DatabaseManagerAlumno:
             connection.close()
         except mysql.connector.Error as error:
             messagebox.showerror("Error", f"Error al insertar datos: {error}")
+
     def delete(self, id_profesor):
         try:
             connection = self.connect()

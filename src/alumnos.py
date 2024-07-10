@@ -2,7 +2,10 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from dataBaseAlumno import DatabaseManagerAlumno
+from dataBaseProfesores import DatabaseManagerProfesores
 from profesores import ProfesoresApp
+from components.config import create_gui
+import random
 
 
 class AlumnoApp:
@@ -23,7 +26,6 @@ class AlumnoApp:
         self.email = StringVar()
         self.telefono = StringVar()
         self.selecion_tutor = StringVar()
-
         self.create_widgets()
         self.app.mainloop()
 
@@ -134,13 +136,19 @@ class AlumnoApp:
             column=1, row=3, padx=10, pady=10
         )
 
-        Button(frame, text="Eliminar", font=("Helvetica", 12), command=self.izar).grid(
-            column=2, row=3, padx=10, pady=10
-        )
+        Button(
+            frame,
+            text="Asignar Mejores Tutores",
+            font=("Helvetica", 12),
+            command=self.asignar_mejores_tutores,
+        ).grid(column=4, row=3, padx=10, pady=10)
 
         Button(
-            frame, text="Selcionar Tutor", font=("Helvetica", 12), command=self.izar
-        ).grid(column=4, row=1, padx=10, pady=10)
+            frame,
+            text="Tomar Foto",
+            font=("Helvetica", 12),
+            command=create_gui,
+        ).grid(column=5, row=3, padx=10, pady=10)
 
     def registrar(self):
         data = (
@@ -175,8 +183,36 @@ class AlumnoApp:
         self.db_manager.delete(id_alumno)
         self.mostrar()
 
-    def izar(self):
-        selecionar = self.selecion_tutor
+    def asignar_mejores_tutores(self):
+        # Obtener todos los alumnos
+        alumnos = self.Codigo.get()
+
+        # Obtener los mejores tutores (asumimos que hay un método para esto)
+        mejores_tutores = DatabaseManagerProfesores.fetch_all(self.database_manager)
+
+        if not mejores_tutores:
+            messagebox.showinfo("Información", "No hay tutores disponibles.")
+            return
+
+        asignaciones = []
+
+        for alumno in alumnos:
+            # Seleccionar un tutor al azar de entre los mejores
+            tutor = random.choice(mejores_tutores)
+
+            # Crear la asignación
+            asignacion = (alumno[0], tutor[0])  # (id_alumno, id_tutor)
+            asignaciones.append(asignacion)
+
+        # Guardar las asignaciones en la base de datos
+        self.database_manager.guardar_asignaciones(asignaciones)
+
+        messagebox.showinfo(
+            "Éxito", "Se han asignado los mejores tutores a los alumnos."
+        )
+
+        # Actualizar la vista de la tabla
+        self.mostrar()
 
 
 if __name__ == "__main__":

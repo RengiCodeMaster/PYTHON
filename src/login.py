@@ -139,11 +139,9 @@ class LoginApp:
     def login(self):
         role = self.role.get()
         if role == "Profesor":
-            messagebox.showinfo("Login", "Login exitoso como Profesor")
             self.app.destroy()
             ProfesoresApp(self.db_manager)
         elif role == "Estudiante":
-            messagebox.showinfo("Login", "Login exitoso como Estudiante")
             self.app.destroy()
             AlumnoApp(self.db_manager)
 
