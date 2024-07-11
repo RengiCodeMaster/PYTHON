@@ -9,6 +9,7 @@ training_data_dir = "training_data"
 if not os.path.exists(training_data_dir):
     os.makedirs(training_data_dir)
 
+
 # Capturar imágenes de los estudiantes
 def capture_images(student_id):
     cap = cv2.VideoCapture(0)
@@ -44,14 +45,15 @@ def capture_images(student_id):
             )
             cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
-        cv2.imshow("Capturing Images", frame)
+        cv2.imshow("Capturando imagen", frame)
 
         if cv2.waitKey(1) & 0xFF == ord("q") or count >= 50:
             break
 
     cap.release()
     cv2.destroyAllWindows()
-    messagebox.showinfo("Info", f"Captured {count} images for student {student_id}")
+    messagebox.showinfo("Info", f"Captura {count} imagen de estudiante {student_id}")
+
 
 # Entrenar el reconocedor facial
 def train_model():
@@ -79,7 +81,8 @@ def train_model():
     recognizer.train(faces, labels)
     recognizer.save("face_recognizer.yml")
     np.save("label_dict.npy", label_dict)
-    messagebox.showinfo("Info", "Model trained and saved successfully")
+    messagebox.showinfo("Info", "Modelo guardo correctamente")
+
 
 # Reconocer al estudiante
 def recognize_student():
@@ -129,6 +132,7 @@ def recognize_student():
     cap.release()
     cv2.destroyAllWindows()
 
+
 # Crear la interfaz gráfica
 def create_gui():
     root = tk.Tk()
@@ -158,16 +162,20 @@ def create_gui():
     def recognize_button_clicked():
         recognize_student()
 
-    capture_button = ttk.Button(frame, text="Capture Images", command=capture_button_clicked)
+    capture_button = ttk.Button(
+        frame, text="Capture Images", command=capture_button_clicked
+    )
     capture_button.pack(pady=10)
 
     train_button = ttk.Button(frame, text="Train Model", command=train_button_clicked)
     train_button.pack(pady=10)
 
-    recognize_button = ttk.Button(frame, text="Recognize Student", command=recognize_button_clicked)
+    recognize_button = ttk.Button(
+        frame, text="Recognize Student", command=recognize_button_clicked
+    )
     recognize_button.pack(pady=10)
-
     root.mainloop()
+
 
 # Ejecutar la interfaz gráfica
 create_gui()
