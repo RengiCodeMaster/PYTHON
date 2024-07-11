@@ -1,6 +1,4 @@
 from tkinter import *
-from tkinter import ttk
-from tkinter import messagebox
 from profesores import ProfesoresApp
 from alumnos import AlumnoApp
 from dataBaseProfesores import DatabaseManagerProfesores
@@ -27,21 +25,19 @@ class LoginApp:
     def create_widgets(self):
         # Main Frame
         main_frame = Frame(self.app, bg="#F8F8F8")
-        main_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+        main_frame.place(relx=0.5, rely=0.5, anchor="center")
 
         # Overlay Frame
-        overlay_frame = Frame(
-            main_frame, bg="#FFFFFF", bd=2, relief="groove", padx=20, pady=20
-        )
+        overlay_frame = Frame(main_frame, bg="#FFFFFF", padx=20, pady=20)
         overlay_frame.pack()
 
         # Title
         title_label = Label(
             overlay_frame,
             text="LOGIN",
-            bg="#FFFFFF",
             fg="#333333",
             font=("Helvetica", 28, "bold"),
+            bg="#FFFFFF",
         )
         title_label.pack(pady=(10, 20))
 
@@ -50,38 +46,35 @@ class LoginApp:
         select_role_btn = Button(
             overlay_frame,
             text="Seleccionar Rol",
-            bg="#FFFFFF",
             font=("Helvetica", 14),
             image=self.porfile_img1,
             command=self.select_role,
-            compound=LEFT,
+            compound="left",
             padx=10,
             pady=5,
-            relief=FLAT,
-            cursor="hand2",
+            bg="#FFFFFF",
+            bd=0,
         )
-        select_role_btn.pack(anchor=W, padx=20, pady=5)
+        select_role_btn.pack(anchor="w", padx=20, pady=5)
 
         # Login Button
         login_btn = Button(
             overlay_frame,
             text="Login",
             command=self.login,
-            compound=LEFT,
+            compound="left",
             bg="#3498DB",
             fg="white",
             font=("Helvetica", 16, "bold"),
             padx=20,
             pady=10,
-            relief=FLAT,
-            cursor="hand2",
+            bd=0,
         )
         login_btn.pack(pady=20)
 
     def select_role(self):
         role = Toplevel(self.app)
         role.title("Select Role")
-        # role.PhotoImage(file="./example/UNAS.png")  # Reemplaza con la ruta de tu ícono
         role.geometry("350x300")
         role.configure(bg="#2C3E50")
 
@@ -90,11 +83,11 @@ class LoginApp:
         role_label = Label(
             role,
             text="Seleccione su rol:",
-            bg="#2C3E50",
             fg="#ECF0F1",
             font=("Helvetica", 16, "bold"),
+            bg="#2C3E50",
         )
-        role_label.pack(anchor=W, padx=10, pady=10)
+        role_label.pack(anchor="w", padx=10, pady=10)
 
         professor_radio = Radiobutton(
             role,
@@ -102,11 +95,12 @@ class LoginApp:
             variable=self.role,
             value="Profesor",
             bg="#2C3E50",
+            activebackground="#34495E",
             fg="#ECF0F1",
-            selectcolor="#34495E",
             font=("Helvetica", 14),
+            selectcolor="#2C3E50",
         )
-        professor_radio.pack(anchor=W, padx=20, pady=5)
+        professor_radio.pack(anchor="w", padx=20, pady=5)
 
         student_radio = Radiobutton(
             role,
@@ -114,11 +108,12 @@ class LoginApp:
             variable=self.role,
             value="Estudiante",
             bg="#2C3E50",
+            activebackground="#34495E",
             fg="#ECF0F1",
-            selectcolor="#34495E",
             font=("Helvetica", 14),
+            selectcolor="#2C3E50",
         )
-        student_radio.pack(anchor=W, padx=20, pady=5)
+        student_radio.pack(anchor="w", padx=20, pady=5)
 
         confirm_btn = Button(
             role,
@@ -129,8 +124,7 @@ class LoginApp:
             font=("Helvetica", 14, "bold"),
             padx=20,
             pady=10,
-            relief=FLAT,
-            cursor="hand2",
+            bd=0,
         )
         confirm_btn.pack(pady=10)
 
@@ -139,11 +133,9 @@ class LoginApp:
     def login(self):
         role = self.role.get()
         if role == "Profesor":
-            messagebox.showinfo("Login", "Login exitoso como Profesor")
             self.app.destroy()
             ProfesoresApp(self.db_manager)
         elif role == "Estudiante":
-            messagebox.showinfo("Login", "Login exitoso como Estudiante")
             self.app.destroy()
             AlumnoApp(self.db_manager)
 
