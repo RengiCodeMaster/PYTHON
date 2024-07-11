@@ -21,12 +21,12 @@ class ProfesoresApp:
         )  # Reemplaza con la ruta de tu ícono
         self.app.iconphoto(False, self.icon_img)
         self.Codigo = StringVar()
-        self.Nombre = StringVar()
-        self.Apellido = StringVar()
-        self.Email = StringVar()
-        self.Genero = StringVar()
-        self.Horario = StringVar()
-
+        self.nombre_estudiante = StringVar()
+        self.apellido_estudiante = StringVar()
+        self.ciclo = StringVar()
+        self.email = StringVar()
+        self.telefono = StringVar()
+        self.selecion_tutor = StringVar()
         self.create_widgets()
         self.app.mainloop()
 
